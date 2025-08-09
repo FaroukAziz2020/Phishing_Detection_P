@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Email Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+        }
+        input[type="submit"], .gmail-btn {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        input[type="submit"]:hover, .gmail-btn:hover {
+            background-color: #45a049;
+        }
+        h2 {
+            margin-top: 30px;
+        }
+        .email-result {
+            border-bottom: 1px solid #ddd;
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phishing Email Detector</h1>
+
+    <!-- Manual Email Prediction -->
+    <form action="/predict" method="post">
+        <textarea name="email" rows="8" placeholder="Paste your email content here..."></textarea><br>
+        <input type="submit" value="Check Email">
+    </form>
+
+    {% if prediction %}
+        <h2>Prediction: {{ prediction }}</h2>
+    {% endif %}
+
+    <hr>
+
+    <!-- Gmail Inbox Button -->
+    <form action="/authorize">
+        <button class="gmail-btn" type="submit">Check My Gmail Inbox</button>
+    </form>
+
+    {% if gmail_results %}
+        <h2>Gmail Inbox Results</h2>
+        {% for subject, result in gmail_results %}
+            <div class="email-result">
+                <strong>Subject:</strong> {{ subject }}<br>
+                <strong>Prediction:</strong> {{ result }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
