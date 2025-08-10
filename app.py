@@ -10,9 +10,11 @@ from bs4 import BeautifulSoup
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Load your trained model and vectorizer
 model = joblib.load("phishing_model.pkl")
