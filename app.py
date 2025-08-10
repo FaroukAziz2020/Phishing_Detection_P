@@ -4,6 +4,7 @@ import re
 import base64
 import pickle
 import secrets
+import os
 from bs4 import BeautifulSoup
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
@@ -123,5 +124,10 @@ def check_gmail():
     return render_template("index.html", gmail_results=output)
 
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc", debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    if os.environ.get("RENDER"):  # Running on Render
+        app.run(host="0.0.0.0", port=port, debug=False)
+    else:  # Local development
+        app.run(host="0.0.0.0", port=port, ssl_context="adhoc", debug=True)
+
 
