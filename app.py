@@ -61,7 +61,11 @@ def predict():
 @app.route("/authorize")
 def authorize():
     creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])  # Load from env
-    redirect_uri = url_for('oauth2callback', _external=True)
+    redirect_uri = url_for('oauth2callback', _external=True, _scheme='https')  # Force HTTPS
+    client_id = creds_dict['web']['client_id']
+
+    print("Redirect URI being sent (authorize):", redirect_uri)  # DEBUG
+    print("Client ID being used (authorize):", client_id)       # DEBUG
 
     flow = Flow.from_client_config(
         creds_dict,
@@ -75,15 +79,18 @@ def authorize():
     session['state'] = state
     return redirect(auth_url)
 
-
 @app.route("/oauth2callback")
 def oauth2callback():
     creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
+    redirect_uri = url_for('oauth2callback', _external=True, _scheme='https')  # Force HTTPS
+
+    print("Redirect URI being sent (callback):", redirect_uri)  # DEBUG
+
     flow = Flow.from_client_config(
         creds_dict,
         scopes=SCOPES,
         state=session['state'],
-        redirect_uri=url_for('oauth2callback', _external=True)
+        redirect_uri=redirect_uri
     )
     flow.fetch_token(authorization_response=request.url)
     creds = flow.credentials
