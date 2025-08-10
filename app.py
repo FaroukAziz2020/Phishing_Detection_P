@@ -60,11 +60,11 @@ def predict():
 
 @app.route("/authorize")
 def authorize():
+    creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])  # Load from env
     redirect_uri = url_for('oauth2callback', _external=True)
-    print("DEBUG Redirect URI:", redirect_uri)  # <--- Debug output
 
-    flow = Flow.from_client_secrets_file(
-        'credentials.json',
+    flow = Flow.from_client_config(
+        creds_dict,
         scopes=SCOPES,
         redirect_uri=redirect_uri
     )
